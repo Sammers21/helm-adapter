@@ -149,9 +149,6 @@ final class IndexYaml {
             newver.put("created", ZonedDateTime.now().format(IndexYaml.TIME_FORMATTER));
             newver.put("digest", tgz.digest());
             newver.putAll(chart.fields());
-            // @todo #32:30min Urls field
-            //  One of the fields Index.yaml require is "urls" field. This field should also be
-            //  generated.
             versions.add(newver);
         }
     }
