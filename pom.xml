@@ -79,7 +79,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.artipie</groupId>
       <artifactId>http</artifactId>
-      <version>0.9.2</version>
+      <version>0.9.7</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
@@ -96,7 +96,7 @@ SOFTWARE.
     <dependency>
       <groupId>com.artipie</groupId>
       <artifactId>vertx-server</artifactId>
-      <version>0.2.2</version>
+      <version>0.3.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

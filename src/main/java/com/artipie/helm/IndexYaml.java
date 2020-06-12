@@ -39,6 +39,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 /**
@@ -111,11 +112,17 @@ final class IndexYaml {
                     return idx;
                 })
             .flatMapCompletable(
-                idx ->
-                    rxs.save(
+                idx -> {
+                    final DumperOptions options = new DumperOptions();
+                    options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+                    options.setPrettyFlow(true);
+                    return rxs.save(
                         IndexYaml.INDEX_YAML,
-                        new Content.From(new Yaml().dump(idx).getBytes(StandardCharsets.UTF_8))
-                    )
+                        new Content.From(
+                            new Yaml(options).dump(idx).getBytes(StandardCharsets.UTF_8)
+                        )
+                    );
+                }
             );
     }
 
@@ -142,8 +149,12 @@ final class IndexYaml {
         final ChartYaml chart = tgz.chartYaml();
         final String version = "version";
         final Map<String, Object> entries = (Map<String, Object>) index.get("entries");
+        final String name = (String) chart.field("name");
+        if (!entries.containsKey(name)) {
+            entries.put(name, new ArrayList<Map<String, Object>>(0));
+        }
         final ArrayList<Map<String, Object>> versions = (ArrayList<Map<String, Object>>)
-            entries.getOrDefault(chart.field("name"), new ArrayList<Map<String, Object>>(0));
+            entries.get(name);
         if (versions.stream().noneMatch(map -> map.get(version).equals(chart.field(version)))) {
             final Map<String, Object> newver = new HashMap<>();
             newver.put("created", ZonedDateTime.now().format(IndexYaml.TIME_FORMATTER));

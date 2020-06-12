@@ -51,10 +51,11 @@ public final class HelmSlice extends Slice.Wrap {
         super(
             new SliceRoute(
                 new SliceRoute.Path(
-                    new RtRule.Multiple(
-                        new RtRule.ByMethod(RqMethod.POST),
-                        new RtRule.ByMethod(RqMethod.PUT)
-                    ),
+                    new RtRule.ByMethod(RqMethod.PUT),
+                    new PushChartSlice(storage)
+                ),
+                new SliceRoute.Path(
+                    new RtRule.ByMethod(RqMethod.POST),
                     new PushChartSlice(storage)
                 ),
                 new SliceRoute.Path(
