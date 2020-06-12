@@ -149,7 +149,7 @@ final class IndexYaml {
      * @param index The index yaml mappings.
      * @param tgz The archive.
      */
-    private static void update(final Map<String, Object> index, final TgzArchive tgz) {
+    private void update(final Map<String, Object> index, final TgzArchive tgz) {
         final ChartYaml chart = tgz.chartYaml();
         final String version = "version";
         final Map<String, Object> entries = (Map<String, Object>) index.get("entries");

@@ -53,7 +53,7 @@ public class SubmitChartITCase {
         final FileStorage fls = new FileStorage(temp, vertx.fileSystem());
         final VertxSliceServer server = new VertxSliceServer(
             vertx,
-            new HelmSlice(fls)
+            new HelmSlice(fls, "http://123/")
         );
         final int port = server.start();
         final WebClient web = WebClient.create(vertx);
