@@ -46,17 +46,18 @@ public final class HelmSlice extends Slice.Wrap {
      * Ctor.
      *
      * @param storage The storage.
+     * @param base The base path for urls field.
      */
-    public HelmSlice(final Storage storage) {
+    public HelmSlice(final Storage storage, final String base) {
         super(
             new SliceRoute(
                 new SliceRoute.Path(
                     new RtRule.ByMethod(RqMethod.PUT),
-                    new PushChartSlice(storage)
+                    new PushChartSlice(storage, base)
                 ),
                 new SliceRoute.Path(
                     new RtRule.ByMethod(RqMethod.POST),
-                    new PushChartSlice(storage)
+                    new PushChartSlice(storage, base)
                 ),
                 new SliceRoute.Path(
                     new RtRule.ByMethod(RqMethod.GET),
