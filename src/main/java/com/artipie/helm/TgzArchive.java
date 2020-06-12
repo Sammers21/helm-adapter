@@ -35,12 +35,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -85,7 +82,7 @@ final class TgzArchive implements Content {
      * @return The digest.
      */
     public String digest() {
-        return DigestUtils.sha256Hex(content);
+        return DigestUtils.sha256Hex(this.content);
     }
 
     /**

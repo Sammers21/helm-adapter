@@ -24,23 +24,20 @@
 
 package com.artipie.helm;
 
-import com.artipie.asto.Key;
-import com.artipie.asto.blocking.BlockingStorage;
 import com.artipie.asto.fs.FileStorage;
 import com.artipie.http.rs.RsStatus;
 import com.artipie.vertx.VertxSliceServer;
 import io.vertx.reactivex.core.Vertx;
 import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.ext.web.client.WebClient;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Push helm chart and ensure if index.yaml is generated properly.
@@ -50,7 +47,7 @@ import java.nio.file.Paths;
 public class SubmitChartITCase {
 
     @Test
-    public void indexYamlIsCorrect(@TempDir final Path temp) throws IOException, InterruptedException {
+    public void indexYamlIsCorrect(@TempDir final Path temp) throws IOException {
         final Vertx vertx = Vertx.vertx();
         final FileStorage fls = new FileStorage(temp, vertx.fileSystem());
         final VertxSliceServer server = new VertxSliceServer(
@@ -73,8 +70,6 @@ public class SubmitChartITCase {
             code,
             new IsEqual<>(Integer.parseInt(RsStatus.OK.code()))
         );
-        final byte[] value = new BlockingStorage(fls).value(new Key.From("index.yaml"));
-        System.out.println(new String(value));
         web.close();
         server.close();
         vertx.close();
