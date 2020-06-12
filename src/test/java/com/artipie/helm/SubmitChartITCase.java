@@ -43,6 +43,7 @@ import org.junit.jupiter.api.io.TempDir;
  * Push helm chart and ensure if index.yaml is generated properly.
  *
  * @since 0.2
+ * @checkstyle MethodBodyCommentsCheck (500 lines)
  */
 public class SubmitChartITCase {
 
