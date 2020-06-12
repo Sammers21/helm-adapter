@@ -40,6 +40,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
@@ -81,12 +83,9 @@ final class TgzArchive implements Content {
     /**
      * The digest string.
      * @return The digest.
-     * @throws NoSuchAlgorithmException If fails.
      */
-    public String digest() throws NoSuchAlgorithmException {
-        final MessageDigest dig = MessageDigest.getInstance("SHA-256");
-        dig.update(this.content);
-        return dig.toString();
+    public String digest() {
+        return DigestUtils.sha256Hex(content);
     }
 
     /**
