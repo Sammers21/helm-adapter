@@ -166,7 +166,9 @@ final class IndexYaml {
             newver.put("created", ZonedDateTime.now().format(IndexYaml.TIME_FORMATTER));
             newver.put(
                 "urls",
-                new ArrayList<>(Collections.singleton(Paths.get(this.base, tgz.name()).normalize().toString()))
+                new ArrayList<>(
+                    Collections.singleton(Paths.get(this.base, tgz.name()).normalize().toString())
+                )
             );
             newver.put("digest", tgz.digest());
             newver.putAll(chart.fields());
