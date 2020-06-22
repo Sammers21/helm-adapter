@@ -33,9 +33,11 @@ import com.artipie.asto.rx.RxStorageWrapper;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.yaml.snakeyaml.DumperOptions;
@@ -51,8 +53,7 @@ import org.yaml.snakeyaml.Yaml;
  * @checkstyle MethodBodyCommentsCheck (500 lines)
  * @checkstyle NonStaticMethodCheck (500 lines)
  */
-@SuppressWarnings({"unchecked",
-    "PMD.UnusedFormalParameter",
+@SuppressWarnings({"PMD.UnusedFormalParameter",
     "PMD.UnusedPrivateField",
     "PMD.ArrayIsStoredDirectly",
     "PMD.UnusedFormalParameter",
@@ -149,6 +150,7 @@ final class IndexYaml {
      * @param index The index yaml mappings.
      * @param tgz The archive.
      */
+    @SuppressWarnings("unchecked")
     private void update(final Map<String, Object> index, final TgzArchive tgz) {
         final ChartYaml chart = tgz.chartYaml();
         final String version = "version";
@@ -162,11 +164,18 @@ final class IndexYaml {
         if (versions.stream().noneMatch(map -> map.get(version).equals(chart.field(version)))) {
             final Map<String, Object> newver = new HashMap<>();
             newver.put("created", ZonedDateTime.now().format(IndexYaml.TIME_FORMATTER));
-            final ArrayList<String> urls = new ArrayList<>(1);
-            urls.add(String.format("%s%s", this.base, tgz.name()));
-            newver.put("urls", ZonedDateTime.now().format(IndexYaml.TIME_FORMATTER));
+            newver.put(
+                "urls",
+                Collections.singleton(Paths.get(this.base, tgz.name()).normalize().toString())
+            );
             newver.put("digest", tgz.digest());
             newver.putAll(chart.fields());
+            // @todo #32:30min Create a unit test for digest field
+            //  One of the fields Index.yaml require is "digest" field. The test should make verify
+            //  that field has been generated correctly.
+            // @todo #32:30min Create a unit test for urls field
+            //  One of the fields Index.yaml require is "urls" field. The test should make verify
+            //  that field has been generated correctly.
             versions.add(newver);
         }
     }
