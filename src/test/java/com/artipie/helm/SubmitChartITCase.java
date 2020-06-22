@@ -28,7 +28,11 @@ import com.artipie.asto.Key;
 import com.artipie.asto.blocking.BlockingStorage;
 import com.artipie.asto.Storage;
 import com.artipie.asto.memory.InMemoryStorage;
+import com.artipie.http.Response;
+import com.artipie.http.Slice;
 import com.artipie.http.rs.RsStatus;
+import com.artipie.http.rs.RsWithBody;
+import com.artipie.http.rs.StandardRs;
 import com.artipie.vertx.VertxSliceServer;
 import com.jcabi.log.Logger;
 import io.vertx.reactivex.core.Vertx;
@@ -36,14 +40,17 @@ import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.ext.web.client.WebClient;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.reactivestreams.Publisher;
 import org.testcontainers.containers.GenericContainer;
 
 /**
@@ -61,8 +68,10 @@ public class SubmitChartITCase {
         final int port = rndPort();
         final VertxSliceServer server = new VertxSliceServer(
             vertx,
-            new HelmSlice(fls, String.format("http://localhost:%d/", port))
+            new HelmSlice(fls, String.format("http://localhost:%d/", port)),
+            port
         );
+        server.start();
         final WebClient web = WebClient.create(vertx);
         final int code = web.post(port, "localhost", "/")
             .rxSendBuffer(
@@ -83,12 +92,9 @@ public class SubmitChartITCase {
             "Generated index.yaml:\n%s",
             new String(new BlockingStorage(fls).value(new Key.From("index.yaml")))
         );
-//        new HelmContainer().
-//        web.close();
         server.close();
         vertx.close();
     }
-
 
     /**
      * Inner subclass to instantiate Helm container.
@@ -106,9 +112,17 @@ public class SubmitChartITCase {
      * @return The random port.
      * @throws IOException if fails
      */
-    private static int rndPort() throws IOException {
-        try (ServerSocket socket = new ServerSocket(0)) {
-            return socket.getLocalPort();
+    private static int rndPort() {
+        final Vertx vertx = Vertx.vertx();
+        final VertxSliceServer server = new VertxSliceServer(
+            vertx,
+            (line, headers, body) -> StandardRs.EMPTY
+        );
+        try {
+            return server.start();
+        } finally {
+            server.stop();
+            vertx.close();
         }
     }
 }
