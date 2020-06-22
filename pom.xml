@@ -116,6 +116,12 @@ SOFTWARE.
       <version>1.7.30</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <version>4.0.3</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
